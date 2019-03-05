@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>RakSul Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <style>
+        .resize-drag {
+            border: 4px #29e;
+            color: black;
+            font-size: 20px;
+            font-family: sans-serif;
+            /* This makes things *much* easier */
+            box-sizing: border-box;
+            display: inline-block;
+        }
+
+        .resize-container {
+            display: inline-block;
+            width: 100%;
+            outline: 2px solid #CCC;
+            border: 1px solid #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- <div class="row">
+            <div class="col-sm">
+                <div class="resize-container">
+                    <canvas id="canvasImg" width="276px" height="183px" class="resize-drag"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <div class="resize-container">
+                    <canvas class="resize-drag" id="canvasText" width="200px"></canvas>
+                </div>
+            </div>
+        </div> -->
+        <svg width="800" height="600">
+            <image xlink:href="download.jpeg" width="100" height="100" class="resize-drag"/>
+            <text></text>
+        </svg>
+    </div>
+    <!-- <img src="download.jpeg" alt="" width="276px" height="183px" id="image" style="display: none"> -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/interactjs@1.3.4/dist/interact.min.js"></script>
+    <script src="index.js"></script>
+
+    <script>
+        // window.onload = function () {
+        //     var canvasImg = document.getElementById("canvasImg");
+        //     var ctxImg = canvasImg.getContext("2d");
+        //     var img = document.getElementById("image");
+        //     ctxImg.drawImage(img, 0, 0);
+
+        //     var text = "Hello World";
+        //     var canvasText = document.getElementById("canvasText");
+        //     var ctxText = canvasText.getContext("2d");
+        //     ctxText.fillStyle = "red";
+        //     ctxText.textAlign = "left";
+        //     ctxText.textBaseline = "top";
+        //     fitTextOnCanvas(canvasText, ctxText, text);
+        // };
+
+        // function fitTextOnCanvas(canvas, context, text) {
+        //     // start with a large font size
+        //     var fontsize = 100;
+        //     // lower the font size until the text fits the canvas
+        //     do {
+        //         fontsize--;
+        //         context.font = fontsize + "px Comic Sans MS";
+        //     } while (context.measureText(text).width > canvas.width)
+
+        //     // draw the text
+        //     context.fillText(text, 0, 0);
+        // }
+
+        
+    </script>
+</body>
+</html>
