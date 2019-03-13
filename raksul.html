@@ -10,7 +10,7 @@
 
     <style>
         .resize-drag {
-            border: 4px #29e;
+            border: 4px solid #29e;
             color: black;
             font-size: 20px;
             font-family: sans-serif;
@@ -24,6 +24,71 @@
             width: 100%;
             outline: 2px solid #CCC;
             border: 1px solid #999;
+        }
+        
+        .floating-toolbar-vertical {
+            width: 42px;
+        }
+        .floating-toolbar {
+            display: none;
+            position: absolute;
+            padding: 5px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+            background-color: #424242;
+            z-index: 1;
+        }
+
+        a#incDegreeButton {
+            background-image: url("images/arrow_up.png");
+        }
+        a#decDegreeButton {
+            background-image: url("images/arrow_down.png");
+        }
+        a#closeButton {
+            background-image: url("images/close.png");
+        }
+
+        a#incDegreeButton, a#decDegreeButton, a#closeButton, a#copyButton {
+            width: 32px;
+            height: 40px;
+            background-size: 31px 40px;
+            display: block;
+        }
+
+        a.toolbarButton {
+            color: #00FF00;
+            background-repeat: no-repeat;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .floating-toolbar-vertical a {
+            margin-top: 3px;
+        }
+        a {
+            color: rgb(0, 160, 232);
+            text-decoration: none;
+        }
+
+        #toolbar1 {
+            display: none;
+        }
+
+        .top {
+            width: 100%;
+            height: 300px;
+            min-height: 10.5em;
+            
+            background-color: #29e;
+            color: white;
+
+            border-radius: 0.75em;
+
+            transform: rotate(0);
+            transform-origin: center center;
+            user-select: none;
+            touch-action: none;
         }
     </style>
 </head>
@@ -43,10 +108,22 @@
                 </div>
             </div>
         </div> -->
-        <svg width="800" height="600">
-            <image xlink:href="download.jpeg" width="100" height="100" class="resize-drag"/>
-            <text></text>
+        <div class="top">
+            <img id="image1" src="download.jpeg" class="drag-rotate" style="display: block">
+        </div>
+        <svg id = "" width="900" height="900">
+            <rect x="0" y="0" width="900" height="900" fill="green">
+            </rect>
+            <image data-id="image1" xlink:href="download.jpeg" class="resize-drag"/>
+            
+            <text id="editText" class="prettyText showToolbar draggable" x="425" y="216" fill="rgba(0,255,127,1)" font-size="24" opacity="1" transform="rotate(2)">Raksul</text>
         </svg>
+        <div id="toolbar1" class="floating-toolbar floating-toolbar-vertical js-floating-toolbar">
+            <a id="incDegreeButton" class="toolbarButton"></a>
+            <a id="decDegreeButton" class="toolbarButton"></a>
+            <a id="copyButton" class="toolbarButton"></a>
+            <a id="closeButton" class="toolbarButton"></a>
+        </div>
     </div>
     <!-- <img src="download.jpeg" alt="" width="276px" height="183px" id="image" style="display: none"> -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -94,3 +171,4 @@
     </script>
 </body>
 </html>
+
