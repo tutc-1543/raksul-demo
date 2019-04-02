@@ -1,7 +1,6 @@
 export default interface CardElement {
-    id: string;
-    width: number;
-    height: number;
+    id: number;
+    name: string;
     angle: number;
     x: number;
     y: number;
@@ -12,4 +11,5 @@ export default interface CardElement {
     moveTo(x: number, y: number, containerId: string): void;
     rotate(rad: number): void;
     updateSize(w: number, h: number): void;
+    save();
 }

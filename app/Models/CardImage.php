@@ -7,7 +7,6 @@ use App\Models\Card;
 class CardImage extends Model
 {
     protected $fillable = [
-        'id',
         'card_id',
         'name',
         'image',

@@ -29,6 +29,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "@types/jquery": "^3.3.29",
         "interact-js": "^2.1.0",
         "interactjs": "^1.4.0-rc.2",
         "jspdf": "^1.5.3"

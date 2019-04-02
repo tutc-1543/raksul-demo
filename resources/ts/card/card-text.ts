@@ -1,9 +1,10 @@
 import CardElement from './card-element'
 
-export default class CardImage implements CardElement {
-    
-    id: string;
+export default class CardText implements CardElement {
+    id: number;
+    name: string;
     font: string;
+    size: number;
     content: string;
     width: number;
     height: number;
@@ -13,8 +14,10 @@ export default class CardImage implements CardElement {
     order: number;
 
     constructor(
-        id: string,
+        id: number,
+        name: string,
         font: string,
+        size: number,
         content: string,
         width: number,
         height: number,
@@ -24,7 +27,9 @@ export default class CardImage implements CardElement {
         angle: number = 0,
     ) {
         this.id = id;
+        this.name = name;
         this.font = font;
+        this.size = size;
         this.content = content;
         this.width = width;
         this.height = height;
@@ -36,52 +41,43 @@ export default class CardImage implements CardElement {
 
     drawToCanvasContext(context: CanvasRenderingContext2D) {
         context.fillStyle = "blue";
-        context.font = "bold 26px Arial";
-        context.fillText(this.content, this.x, this.y + (this.height / 2) + 8);
+        context.font = this.size.toString() + "px " + this.font.toString();
+        console.log(context.font);
+        context.fillText(this.content, this.x, this.y + this.height/2);
     }
 
     display(containerId: string) {
+        console.log(containerId);
         let container = document.getElementById(containerId);
-        // <svg id="svg-text-2" xmlns="http://www.w3.org/2000/svg">
-        //                     <style>
-        //                         .small { font: italic 13px sans-serif; }
-        //                         .heavy { font: bold 30px sans-serif; }
 
-        //                         /* Note that the color of the text is set with the    *
-        //                         * fill property, the color property is for HTML only */
-        //                         .Rrrrr { font: italic 40px serif; fill: red; }
-        //                     </style>
+        let textSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        textSvg.id = this.name;
+        textSvg.setAttribute("class", "drag-resize dashed");
+        
+        let order = 20000 + this.order;
+        // canvas.style.zIndex = order.toStr
+        textSvg.style.zIndex = order.toString();
+        container.appendChild(textSvg);
 
-        //                     <text id="text-2" x="200" y="35" class="small">My</text>
-        //                 </svg>
+        let text: any = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.id = this.name;
+        text.setAttribute("x", this.x);
+        text.setAttribute("y", this.y);
+        text.setAttribute("fill", "blue");
+        text.setAttribute("font-family", this.font);
+        text.setAttribute("font-size", this.size.toString());
+        text.textContent = "Hello";
+        textSvg.appendChild(text);
 
+        let bbox = text.getBBox();
+        textSvg.setAttribute( 'width', bbox.width);
+        textSvg.setAttribute( 'height', bbox.height);
 
-        // let textSvg = document.createElement("svg");
-        // textSvg.id = this.id;
-
-        // let text = document.createElement("text");
-        // text.font = "italic 13px sans-serif";
-
-        let card = document.createElement("canvas");
-        //check exist canvas with id = id param
-        let canvas = document.createElement("canvas");
-        let context = canvas.getContext('2d');
-
-        canvas.id = this.id;
-        canvas.className = "drag-resize";
-        canvas.width  = this.width;
-        canvas.height = this.height;
-        let order = 9000 + this.order;
-        canvas.style.zIndex = order.toString();
-        canvas.style.left = this.x.toString();
-        canvas.style.top = this.y.toString();
-        canvas.style.position = "absolute";
-
-        context.fillStyle = "blue";
-        context.font = "bold 26px Arial";
-        context.fillText(this.content, 0, (canvas.height / 2) + 8);
-
-        container.appendChild(canvas);
+        textSvg.setAttribute( 'viewBox', bbox.x + ' ' + bbox.y + ' ' + bbox.width + ' ' + bbox.height );
+        textSvg.style.left = this.x + 'px';
+        textSvg.style.top = this.y + 'px';
+        textSvg.style.position = 'absolute';
+        
     }
 
     moveTo(x: number, y: number, containerId: string): void {
@@ -89,6 +85,7 @@ export default class CardImage implements CardElement {
         var rect = container.getBoundingClientRect();
         this.x = x - rect.left;
         this.y = y - rect.top;
+        console.log(this.y);
     }
 
     rotate(rad: number): void {
@@ -98,5 +95,28 @@ export default class CardImage implements CardElement {
     updateSize(w: number, h: number): void {
         this.width = w;
         this.height = h;
+        this.size = this.getTextFontSize(this.content, w, this.font);
+        
+    }
+
+    getTextFontSize(text: string, width: number, fontFamily: string) {
+        // re-use canvas object for better performance
+        let canvas = document.createElement("canvas");
+        let context = canvas.getContext("2d");
+        let fontSize = 0.1;
+        context.font = fontSize.toString() + 'px ' + fontFamily.toString();
+        let metrics = context.measureText(text);
+        while (metrics.width < width) {
+            fontSize = (fontSize * 10 + 1) / 10;
+            context.font = fontSize.toString() + 'px ' + fontFamily.toString();
+            metrics = context.measureText(text);
+        }
+        console.log(width);
+        console.log(metrics.width);
+        return fontSize;
+    }
+    
+    save() {
+        //
     }
 }

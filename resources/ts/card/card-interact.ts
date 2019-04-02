@@ -1,9 +1,11 @@
 import interact from 'interactjs';
-import * as app from './index';
+const _global = (window) as any;
+
 interact('.drag-resize')
     .draggable({
         // enable inertial throwing
         inertia: true,
+        restriction: 'svg',
         // keep the element within the area of it's parent
         modifiers: [
         interact.modifiers.restrict({
@@ -20,8 +22,7 @@ interact('.drag-resize')
         // call this function on every dragend event
         onend: function (event) {
             const rect = event.target.getBoundingClientRect();
-
-            app.updateCardElementPosition(event.target.id, rect.left, rect.top);
+            _global.updateCardElementPosition(event.target.id, rect.left, rect.top);
         }
     })
     .resizable({
@@ -44,8 +45,9 @@ interact('.drag-resize')
         preserveAspectRatio: true,
 
         onend: function (event) {
-
-            app.updateCardElementSize(event.target.id, event.target.offsetWidth, event.target.offsetHeight);
+            let width = parseFloat(event.target.style.width);
+            let height = parseFloat(event.target.style.height);
+            _global.updateCardElementSize(event.target.id, width, height);
         },
     
         inertia: true
@@ -55,9 +57,9 @@ interact('.drag-resize')
         x = (parseFloat(target.getAttribute('data-x')) || 0),
         y = (parseFloat(target.getAttribute('data-y')) || 0);
 
+        target.style.border = "dashed red";
         target.style.width  = event.rect.width + 'px';
         target.style.height = event.rect.height + 'px';
-        console.log(event.rect.width);
         // translate when resizing from top or left edges
         x += event.deltaRect.left;
         y += event.deltaRect.top;
@@ -74,11 +76,13 @@ interact('.drag-resize')
             // keep the dragged position in the data-x/data-y attributes
             x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
             y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-
         // translate the element
+
+        target.style.border = "dashed red";
         target.style.webkitTransform =
         target.style.transform =
         'translate(' + x + 'px, ' + y + 'px)';
+
 
         // update the posiion attributes
         target.setAttribute('data-x', x);
