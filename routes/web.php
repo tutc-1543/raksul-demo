@@ -12,3 +12,4 @@
 */
 
 Route::get('/', 'CardController@index');
+Route::put('cards/{card}', 'CardController@update')->name('card.update');

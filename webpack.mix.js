@@ -13,5 +13,7 @@ const mix = require('laravel-mix');
 
 mix.js('resources/js/app.js', 'public/js')
    .sass('resources/sass/app.scss', 'public/css')
+   .ts('resources/ts/index.ts', 'public/js/tab.js')
    .ts('resources/ts/card/index.ts', 'public/js/card.js')
-   .ts('resources/ts/card/card-interact.ts', 'public/js/card-interact.js');
+   .ts('resources/ts/card/card-interact.ts', 'public/js/card-interact.js')
+   .less('resources/less/app.less', 'public/css/card.css');
