@@ -10,7 +10,7 @@ interact('.drag-resize')
         interact.modifiers.restrict({
             restriction: "parent",
             endOnly: true,
-            elementRect: { top: 1, left: 1, bottom: 1, right: 1 }
+            elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
         }),
         ],
         // enable autoScroll
@@ -37,7 +37,7 @@ interact('.drag-resize')
     
           // minimum size
           interact.modifiers.restrictSize({
-            min: { width: 20, height: 20 },
+            min: { width: 5, height: 5 },
           }),
         ],
 
@@ -55,19 +55,13 @@ interact('.drag-resize')
         var target = event.target,
         x = (parseFloat(target.getAttribute('data-x')) || 0),
         y = (parseFloat(target.getAttribute('data-y')) || 0);
-
-        target.style.border = "dashed red";
-        target.style.width  = event.rect.width + 'px';
-        target.style.height = event.rect.height + 'px';
-        // translate when resizing from top or left edges
-        x += event.deltaRect.left;
-        y += event.deltaRect.top;
-
-        target.style.webkitTransform = target.style.transform =
-            'translate(' + x + 'px,' + y + 'px)';
-
-        target.setAttribute('data-x', x);
-        target.setAttribute('data-y', y);
+        let container : HTMLElement = _global.getContainer();
+        if (parseFloat(target.style.left) + event.rect.width <= parseFloat(container.style.width)
+        && parseFloat(target.style.top) + event.rect.height <= parseFloat(container.style.height)) {
+            target.style.width  = event.rect.width + 'px';
+            target.style.height = event.rect.height + 'px';
+        }
+                
     });
 
     function dragMoveListener (event) {
@@ -77,7 +71,6 @@ interact('.drag-resize')
             y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
         // translate the element
 
-        target.style.border = "dashed red";
         target.style.webkitTransform =
         target.style.transform =
         'translate(' + x + 'px, ' + y + 'px)';

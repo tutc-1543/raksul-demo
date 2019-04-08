@@ -9464,10 +9464,10 @@ return _$index_26;
 
 /***/ }),
 
-/***/ "./resources/ts/card/card-interact.ts":
-/*!********************************************!*\
-  !*** ./resources/ts/card/card-interact.ts ***!
-  \********************************************/
+/***/ "./resources/ts/card-interact.ts":
+/*!***************************************!*\
+  !*** ./resources/ts/card-interact.ts ***!
+  \***************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9485,7 +9485,7 @@ interactjs_1.default('.drag-resize')
         interactjs_1.default.modifiers.restrict({
             restriction: "parent",
             endOnly: true,
-            elementRect: { top: 1, left: 1, bottom: 1, right: 1 }
+            elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
         }),
     ],
     // enable autoScroll
@@ -9509,7 +9509,7 @@ interactjs_1.default('.drag-resize')
         }),
         // minimum size
         interactjs_1.default.modifiers.restrictSize({
-            min: { width: 20, height: 20 },
+            min: { width: 5, height: 5 },
         }),
     ],
     preserveAspectRatio: true,
@@ -9522,23 +9522,19 @@ interactjs_1.default('.drag-resize')
 })
     .on('resizemove', function (event) {
     var target = event.target, x = (parseFloat(target.getAttribute('data-x')) || 0), y = (parseFloat(target.getAttribute('data-y')) || 0);
-    target.style.border = "dashed red";
-    target.style.width = event.rect.width + 'px';
-    target.style.height = event.rect.height + 'px';
-    // translate when resizing from top or left edges
-    x += event.deltaRect.left;
-    y += event.deltaRect.top;
-    target.style.webkitTransform = target.style.transform =
-        'translate(' + x + 'px,' + y + 'px)';
-    target.setAttribute('data-x', x);
-    target.setAttribute('data-y', y);
+    var container = _global.getContainer();
+    console.log(container.style.width);
+    if (parseFloat(target.style.left) + event.rect.width <= parseFloat(container.style.width)
+        && parseFloat(target.style.top) + event.rect.height <= parseFloat(container.style.height)) {
+        target.style.width = event.rect.width + 'px';
+        target.style.height = event.rect.height + 'px';
+    }
 });
 function dragMoveListener(event) {
     var target = event.target, 
     // keep the dragged position in the data-x/data-y attributes
     x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx, y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
     // translate the element
-    target.style.border = "dashed red";
     target.style.webkitTransform =
         target.style.transform =
             'translate(' + x + 'px, ' + y + 'px)';
@@ -9551,13 +9547,13 @@ function dragMoveListener(event) {
 /***/ }),
 
 /***/ 3:
-/*!**************************************************!*\
-  !*** multi ./resources/ts/card/card-interact.ts ***!
-  \**************************************************/
+/*!*********************************************!*\
+  !*** multi ./resources/ts/card-interact.ts ***!
+  \*********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/framgia/Desktop/raksul-demo/resources/ts/card/card-interact.ts */"./resources/ts/card/card-interact.ts");
+module.exports = __webpack_require__(/*! /home/framgia/Desktop/raksul-demo/resources/ts/card-interact.ts */"./resources/ts/card-interact.ts");
 
 
 /***/ })
