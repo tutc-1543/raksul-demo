@@ -9480,17 +9480,16 @@ interactjs_1.default('.drag-resize')
     .draggable({
     // enable inertial throwing
     inertia: true,
-    restriction: 'svg',
     // keep the element within the area of it's parent
     modifiers: [
         interactjs_1.default.modifiers.restrict({
             restriction: "parent",
             endOnly: true,
-            elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
+            elementRect: { top: 1, left: 1, bottom: 1, right: 1 }
         }),
     ],
     // enable autoScroll
-    autoScroll: true,
+    autoScroll: false,
     // call this function on every dragmove event
     onmove: dragMoveListener,
     // call this function on every dragend event

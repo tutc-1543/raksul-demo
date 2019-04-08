@@ -3,16 +3,18 @@ import Card from '../card/card';
 import CardImage from '../card/card-image';
 import CardText from '../card/card-text';
 import CardElement from '../card/card-element';
+const _global = (window) as any
 
 const IMAGE = 'image';
 const TEXT = 'text';
-
+var cardZoom: number = 1.0;
 $(document).ready(() => {
     initTabMenu();
-    const _global = (window) as any
     $('#saveCard').click(() => {
         saveCard(_global.card);
     });
+
+    initZoom();
 });
 
 function saveCard(card: Card) {
@@ -21,7 +23,7 @@ function saveCard(card: Card) {
 
     for (var i = 0; i < cardElements.length; i++) {
         let el: any = cardElements[i];
-        el.save();
+        el.save(cardZoom);
         let Data: Object = {};
         Data['id'] = el.id;
         if (el.constructor.name == CardImage.name){
@@ -43,8 +45,8 @@ function saveCard(card: Card) {
     var cardData = {
         'id': card.id,
         'name': card.name,
-        'width': card.width,
-        'height': card.height,
+        'width': card.p_width,
+        'height': card.p_height,
         'card-elements': cardElementData
     }
 
@@ -90,6 +92,19 @@ function initTabMenu() {
         
             document.getElementById(tab.value).style.display = "block";
             tab.className += " active";
+        });
+    };
+}
+
+function initZoom() {
+    let zoomOPtions: any;
+    zoomOPtions = document.getElementsByClassName("zoom");
+    for (let i = 0; i < zoomOPtions.length; i++) {
+        let zoomOPtion: HTMLButtonElement = zoomOPtions[i];
+        zoomOPtion.addEventListener("click", () => {
+            let zoom: number = parseFloat(zoomOPtion.value);
+            let card: Card = _global.card;
+            cardZoom = card.zoomCard(zoom);
         });
     };
 }

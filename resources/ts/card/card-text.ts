@@ -39,15 +39,13 @@ export default class CardText implements CardElement {
         this.order = order;
     }
 
-    drawToCanvasContext(context: CanvasRenderingContext2D) {
+    drawToCanvasContext(context: CanvasRenderingContext2D, scaleDPI: number, zoom: number = 1) {
         context.fillStyle = "blue";
         context.font = this.size.toString() + "px " + this.font.toString();
-        console.log(context.font);
         context.fillText(this.content, this.x, this.y + this.height/2);
     }
 
-    display(containerId: string) {
-        console.log(containerId);
+    display(containerId: string, zoom: number) {
         let container = document.getElementById(containerId);
 
         let textSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -85,7 +83,6 @@ export default class CardText implements CardElement {
         var rect = container.getBoundingClientRect();
         this.x = x - rect.left;
         this.y = y - rect.top;
-        console.log(this.y);
     }
 
     rotate(rad: number): void {
@@ -111,8 +108,6 @@ export default class CardText implements CardElement {
             context.font = fontSize.toString() + 'px ' + fontFamily.toString();
             metrics = context.measureText(text);
         }
-        console.log(width);
-        console.log(metrics.width);
         return fontSize;
     }
     

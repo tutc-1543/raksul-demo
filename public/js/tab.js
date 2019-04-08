@@ -10487,32 +10487,43 @@ var CardImage = /** @class */ (function () {
         this.p_y = y;
         this.order = order;
     }
-    CardImage.prototype.drawToCanvasContext = function (context) {
-        var _this = this;
-        var image = new Image();
-        image.src = this.src;
-        image.onload = function () {
-            context.drawImage(image, _this.x * 4, _this.y * 4, _this.width * 4, _this.height * 4);
-        };
+    CardImage.prototype.drawToCanvasContext = function (context, scaleDPI, zoom) {
+        if (scaleDPI === void 0) { scaleDPI = 1; }
+        if (zoom === void 0) { zoom = 1; }
+        var src = this.src, x = (this.x / zoom) * scaleDPI, y = (this.y / zoom) * scaleDPI, width = (this.width / zoom) * scaleDPI, height = (this.height / zoom) * scaleDPI;
+        return new Promise(function (resolve, reject) {
+            var image = new Image();
+            image.src = src;
+            image.onload = function () {
+                context.drawImage(image, x, y, width, height);
+                resolve(image);
+            };
+            image.onerror = reject;
+            if (image.complete) {
+                image.onload;
+            }
+        });
     };
-    CardImage.prototype.display = function (containerId) {
+    CardImage.prototype.display = function (containerId, zoom) {
+        if (zoom === void 0) { zoom = 1; }
         var container = document.getElementById(containerId);
         //check exist canvas with id = id param
-        var canvas = document.createElement("canvas");
+        var canvas = document.getElementById(this.name);
+        if (!canvas) {
+            canvas = document.createElement("canvas");
+            canvas.id = this.name;
+            canvas.className = "drag-resize dashed";
+        }
         var ctx = canvas.getContext('2d');
-        // (300dpi · 130mm
-        //     25.4mm)
         // covert mm-> px (PRINTDPI = 350(default))
-        var p_w = (_global.PRINTDPI * this.p_width) / 25.4;
+        var p_w = (_global.PRINTDPI * this.p_width) / 25.4; // pixel for dpi = default
         var p_h = (_global.PRINTDPI * this.p_height) / 25.4;
         var MYDPI = _global.MYDPI();
-        console.log(MYDPI);
-        this.width = (MYDPI * p_w) / (_global.PRINTDPI);
-        this.height = (MYDPI * p_h) / (_global.PRINTDPI);
-        this.x = (MYDPI * this.p_x) / 25.4;
-        this.y = (MYDPI * this.p_y) / 25.4;
-        canvas.id = this.name;
-        canvas.className = "drag-resize dashed";
+        this.width = (MYDPI * p_w) / (_global.PRINTDPI) * zoom; // pixel for dpi = current device dpi
+        this.height = (MYDPI * p_h) / (_global.PRINTDPI) * zoom;
+        this.x = (MYDPI * this.p_x) / 25.4 * zoom;
+        this.y = (MYDPI * this.p_y) / 25.4 * zoom;
+        // update canvas
         canvas.width = p_w;
         canvas.height = p_h;
         canvas.style.width = this.width.toString() + 'px';
@@ -10543,12 +10554,14 @@ var CardImage = /** @class */ (function () {
         this.width = w;
         this.height = h;
     };
-    CardImage.prototype.save = function () {
+    CardImage.prototype.save = function (zoom) {
+        if (zoom === void 0) { zoom = 1; }
+        console.log(zoom);
         var MYDPI = _global.MYDPI();
-        this.p_x = this.x * 25.4 / MYDPI;
-        this.p_y = this.y * 25.4 / MYDPI;
-        this.p_width = this.width * 25.4 / MYDPI;
-        this.p_height = this.height * 25.4 / MYDPI;
+        this.p_x = (this.x / zoom) * 25.4 / MYDPI;
+        this.p_y = (this.y / zoom) * 25.4 / MYDPI;
+        this.p_width = (this.width / zoom) * 25.4 / MYDPI;
+        this.p_height = (this.height / zoom) * 25.4 / MYDPI;
     };
     return CardImage;
 }());
@@ -10583,14 +10596,13 @@ var CardText = /** @class */ (function () {
         this.y = y;
         this.order = order;
     }
-    CardText.prototype.drawToCanvasContext = function (context) {
+    CardText.prototype.drawToCanvasContext = function (context, scaleDPI, zoom) {
+        if (zoom === void 0) { zoom = 1; }
         context.fillStyle = "blue";
         context.font = this.size.toString() + "px " + this.font.toString();
-        console.log(context.font);
         context.fillText(this.content, this.x, this.y + this.height / 2);
     };
-    CardText.prototype.display = function (containerId) {
-        console.log(containerId);
+    CardText.prototype.display = function (containerId, zoom) {
         var container = document.getElementById(containerId);
         var textSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         textSvg.id = this.name;
@@ -10621,7 +10633,6 @@ var CardText = /** @class */ (function () {
         var rect = container.getBoundingClientRect();
         this.x = x - rect.left;
         this.y = y - rect.top;
-        console.log(this.y);
     };
     CardText.prototype.rotate = function (rad) {
         throw new Error("Method not implemented.");
@@ -10643,8 +10654,6 @@ var CardText = /** @class */ (function () {
             context.font = fontSize.toString() + 'px ' + fontFamily.toString();
             metrics = context.measureText(text);
         }
-        console.log(width);
-        console.log(metrics.width);
         return fontSize;
     };
     CardText.prototype.save = function () {
@@ -10689,21 +10698,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 var card_image_1 = __webpack_require__(/*! ../card/card-image */ "./resources/ts/card/card-image.ts");
 var card_text_1 = __webpack_require__(/*! ../card/card-text */ "./resources/ts/card/card-text.ts");
+var _global = (window);
 var IMAGE = 'image';
 var TEXT = 'text';
+var cardZoom = 1.0;
 $(document).ready(function () {
     initTabMenu();
-    var _global = (window);
     $('#saveCard').click(function () {
         saveCard(_global.card);
     });
+    initZoom();
 });
 function saveCard(card) {
     var cardElements = card.cardElements;
     var cardElementData = [];
     for (var i = 0; i < cardElements.length; i++) {
         var el = cardElements[i];
-        el.save();
+        el.save(cardZoom);
         var Data = {};
         Data['id'] = el.id;
         if (el.constructor.name == card_image_1.default.name) {
@@ -10726,8 +10737,8 @@ function saveCard(card) {
     var cardData = {
         'id': card.id,
         'name': card.name,
-        'width': card.width,
-        'height': card.height,
+        'width': card.p_width,
+        'height': card.p_height,
         'card-elements': cardElementData
     };
     $.ajaxSetup({
@@ -10773,6 +10784,22 @@ function initTabMenu() {
     };
     for (var i = 0; i < tabLinks.length; i++) {
         _loop_1(i);
+    }
+    ;
+}
+function initZoom() {
+    var zoomOPtions;
+    zoomOPtions = document.getElementsByClassName("zoom");
+    var _loop_2 = function (i) {
+        var zoomOPtion = zoomOPtions[i];
+        zoomOPtion.addEventListener("click", function () {
+            var zoom = parseFloat(zoomOPtion.value);
+            var card = _global.card;
+            cardZoom = card.zoomCard(zoom);
+        });
+    };
+    for (var i = 0; i < zoomOPtions.length; i++) {
+        _loop_2(i);
     }
     ;
 }
