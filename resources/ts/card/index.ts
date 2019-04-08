@@ -15,41 +15,13 @@ const TEXT = 1002;
 const PRINTDPI = 350;
 
 $(document).ready( () => {
-    document.getElementById('previewCanvasButton').addEventListener("click", async () => {
+    document.getElementById('previewCanvasButton').addEventListener("click", () => {
         cardCanvas = new CardCanvas('mycanvas', card);
-        await cardCanvas.drawCanvas(exportPdf());
-
-        function exportPdf(): any {
-            let canvas = cardCanvas.getCanvas();
-            let imgData = canvas.toDataURL("image/jpeg", 1.0);
-            console.log(imgData);
-            var img = new Image();
-            img.src = imgData;
-            document.getElementById("myImage").append(img);
-        }
-        
-        // var pdf = new jsPDF('p', 'mm');
-        // pdf.addImage(imgData, 'JPEG', 0, 0);
-        //pdf.save("download.pdf");
-    });
-
-    document.getElementById('downloadCanvas').addEventListener("click", (ev: MouseEvent) => {
-        // html2canvas(document.getElementById(card.id), {
-        //     onrendered: function(canvas: HTMLCanvasElement) {         
-        //         var imgData = canvas.toDataURL('image/png');              
-        //         var doc = new jsPDF('p', 'mm');
-        //         doc.addImage(imgData, 'PNG', 10, 10);
-        //         doc.save('sample-file.pdf');
-        //     }
-        // });
-        var canvas = cardCanvas.getCanvas();
-        var imgData = canvas.toDataURL("image/jpeg", 1.0);
-        // var pdf = new jsPDF('p', 'mm');
-        // pdf.addImage(imgData, 'JPEG', 0, 0);
-        //pdf.save("download.pdf");
+        cardCanvas.drawCanvas(true);
     });
 });
 var getDPI = function getDPI() {
+    return 101.6;
     var div = document.createElement( "div");
     div.style.height = "1in";
     div.style.width = "1in";
@@ -80,7 +52,6 @@ var initCard = (id: number, name: string, container: string, width: number, heig
 
 var updateCardElementPosition = function updateCardElementPosition(cardElementId: string, x: number, y: number): void {
     let cardElement = card.findCardElement(cardElementId);
-    console.log(cardElementId);
     if (cardElement != null)
         cardElement.moveTo(x, y, card.getContainerId());
 }
@@ -98,8 +69,9 @@ var getContainer = function getContainer(): HTMLElement {
 
 var addCardImage = function addCardImage(id: number, name: string, image: string, width: number, height: number, x: number, y: number) : void {
     let cardImage = new CardImage(id, name, image, width, height, x, y);
-    if (containerId != null)
+    if (containerId != null) {
         cardImage.display(containerId);
+    }
     card.addCardElement(cardImage);
 }
 

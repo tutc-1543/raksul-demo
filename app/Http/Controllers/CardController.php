@@ -24,7 +24,7 @@ class CardController extends Controller
             'width' => $request->get('width'),
             'height' => $request->get('height')
         ]);
-        
+        $card->save();
         $cardElements = $request->get('card-elements');
         $cardImages = [];
         foreach($cardElements as $cardElement) {
@@ -51,6 +51,5 @@ class CardController extends Controller
                 $image = CardImage::create($cardImage);
             }
         }
-        //$card->save();
     }
 }
