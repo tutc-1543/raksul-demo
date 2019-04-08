@@ -10631,7 +10631,6 @@ var CardImage = /** @class */ (function () {
     };
     CardImage.prototype.save = function (zoom) {
         if (zoom === void 0) { zoom = 1; }
-        console.log(zoom);
         var MYDPI = _global.MYDPI();
         this.p_x = (this.x / zoom) * 25.4 / MYDPI;
         this.p_y = (this.y / zoom) * 25.4 / MYDPI;
@@ -10737,11 +10736,41 @@ var IMAGE = 1001;
 var TEXT = 1002;
 var PRINTDPI = 350;
 $(document).ready(function () {
+    //         target.style.border = "dashed red";
+    initDashedClick();
     document.getElementById('previewCanvasButton').addEventListener("click", function () {
         cardCanvas = new card_canvas_1.default('mycanvas', card);
         cardCanvas.drawCanvas(true);
     });
 });
+function initDashedClick() {
+    $(window).on("click.Bst", function (event) {
+        if (!$('.dashed').is(event.target)) {
+            for (var i = 0; i < dashedElements.length; i++) {
+                var dashedElement = dashedElements[i];
+                dashedElement.style.border = "";
+            }
+            ;
+        }
+    });
+    var dashedElements;
+    dashedElements = document.getElementsByClassName("dashed");
+    var _loop_1 = function (i) {
+        var dashedElement = dashedElements[i];
+        dashedElement.addEventListener("click", function () {
+            for (var i_1 = 0; i_1 < dashedElements.length; i_1++) {
+                var dashedElement_1 = dashedElements[i_1];
+                dashedElement_1.style.border = "";
+            }
+            ;
+            dashedElement.style.border = "dashed red";
+        });
+    };
+    for (var i = 0; i < dashedElements.length; i++) {
+        _loop_1(i);
+    }
+    ;
+}
 var getDPI = function getDPI() {
     return 101.6;
     var div = document.createElement("div");

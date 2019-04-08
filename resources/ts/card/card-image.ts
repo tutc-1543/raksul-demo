@@ -56,8 +56,6 @@ export default class CardImage implements CardElement {
 
     display(containerId: string, zoom: number = 1) {
         let container = document.getElementById(containerId);
-
-        
         //check exist canvas with id = id param
         let canvas : any = document.getElementById(this.name);
         if (!canvas) {
@@ -114,7 +112,6 @@ export default class CardImage implements CardElement {
     }
     
     save(zoom: number = 1) {
-        console.log(zoom);
         var MYDPI = _global.MYDPI();
         this.p_x = (this.x/zoom)*25.4/MYDPI;
         this.p_y = (this.y/zoom)*25.4/MYDPI;

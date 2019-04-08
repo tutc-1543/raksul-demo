@@ -1,9 +1,8 @@
+declare function require(name:string);
 import CardImage from './card-image'
 import CardText from './card-text';
 import CardCanvas from './card-canvas';
 import Card from './card';
-import interact from 'interactjs';
-import * as jsPDF from 'jspdf';
 import { async } from 'q';
 import * as $ from 'jquery';
 
@@ -15,11 +14,40 @@ const TEXT = 1002;
 const PRINTDPI = 350;
 
 $(document).ready( () => {
+    //         target.style.border = "dashed red";
+    initDashedClick();
     document.getElementById('previewCanvasButton').addEventListener("click", () => {
         cardCanvas = new CardCanvas('mycanvas', card);
         cardCanvas.drawCanvas(true);
     });
 });
+function initDashedClick() {
+    $(window).on("click.Bst", (event: any) => {
+        if (!$('.dashed').is(event.target)) {
+            for (let i = 0; i < dashedElements.length; i++) {
+                let dashedElement: HTMLButtonElement = dashedElements[i];
+                dashedElement.style.border = "";
+            };
+        }
+        
+    });
+    
+    let dashedElements: any;
+    dashedElements = document.getElementsByClassName("dashed");
+    for (let i = 0; i < dashedElements.length; i++) {
+        let dashedElement: HTMLButtonElement = dashedElements[i];
+        dashedElement.addEventListener("click", () => {
+            for (let i = 0; i < dashedElements.length; i++) {
+                let dashedElement: HTMLButtonElement = dashedElements[i];
+                dashedElement.style.border = "";
+            };
+            dashedElement.style.border = "dashed red";
+        });
+    };
+
+    
+}
+
 var getDPI = function getDPI() {
     return 101.6;
     var div = document.createElement( "div");

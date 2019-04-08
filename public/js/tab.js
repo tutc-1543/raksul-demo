@@ -10462,6 +10462,81 @@ return jQuery;
 
 /***/ }),
 
+/***/ "./resources/ts/card/card-canvas.ts":
+/*!******************************************!*\
+  !*** ./resources/ts/card/card-canvas.ts ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var _global = (window);
+var CardCanvas = /** @class */ (function () {
+    function CardCanvas(containerId, card) {
+        this.card = card;
+        var MYDPI = _global.MYDPI();
+        var PRINTDPI = _global.PRINTDPI;
+        this.scaleDPI = PRINTDPI / MYDPI;
+        var container = document.getElementById(containerId);
+        container.style.width = card.width * this.scaleDPI + 'px';
+        container.style.height = card.height * this.scaleDPI + 'px';
+        var canvas = document.createElement("canvas");
+        var ctx = canvas.getContext('2d');
+        canvas.id = card.id + '-preview';
+        canvas.width = card.width * this.scaleDPI;
+        canvas.height = card.height * this.scaleDPI;
+        canvas.style.zIndex = "9000";
+        canvas.style.left = "0";
+        canvas.style.top = "0";
+        canvas.style.position = "absolute";
+        canvas.style.border = "1px solid";
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        container.appendChild(canvas);
+        this.context = ctx;
+        this.canvas = canvas;
+    }
+    CardCanvas.prototype.drawCanvas = function (download) {
+        var _this = this;
+        if (download === void 0) { download = false; }
+        this.card.cardElements.sort(function (e1, e2) {
+            return e1.order < e2.order ? 1 : -1;
+        });
+        var canvas = this.canvas, ctx = this.context;
+        var loadCardElements = [];
+        var i = 0;
+        this.card.cardElements.forEach(function (element) {
+            loadCardElements[i++] = element.drawToCanvasContext(_this.context, _this.scaleDPI, _this.card.zoom);
+        });
+        var dataURL;
+        Promise.all(loadCardElements).then(function (value) {
+            dataURL = canvas.toDataURL("image/png");
+            var download = document.getElementById("downloadCard");
+            var imageData = dataURL;
+            download.setAttribute("href", imageData);
+            download.click();
+        }, function (reason) {
+            console.error(reason);
+        });
+    };
+    CardCanvas.prototype.getCanvas = function () {
+        return this.canvas;
+    };
+    CardCanvas.prototype.getContext = function () {
+        return this.context;
+    };
+    CardCanvas.prototype.getCard = function () {
+        return this.card;
+    };
+    return CardCanvas;
+}());
+exports.default = CardCanvas;
+
+
+/***/ }),
+
 /***/ "./resources/ts/card/card-image.ts":
 /*!*****************************************!*\
   !*** ./resources/ts/card/card-image.ts ***!
@@ -10556,7 +10631,6 @@ var CardImage = /** @class */ (function () {
     };
     CardImage.prototype.save = function (zoom) {
         if (zoom === void 0) { zoom = 1; }
-        console.log(zoom);
         var MYDPI = _global.MYDPI();
         this.p_x = (this.x / zoom) * 25.4 / MYDPI;
         this.p_y = (this.y / zoom) * 25.4 / MYDPI;
@@ -10666,6 +10740,198 @@ exports.default = CardText;
 
 /***/ }),
 
+/***/ "./resources/ts/card/card.ts":
+/*!***********************************!*\
+  !*** ./resources/ts/card/card.ts ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var _global = (window);
+var Card = /** @class */ (function () {
+    function Card(containerId, id, name, width, height) {
+        this.cardElements = [];
+        this.p_width = width;
+        this.p_height = height;
+        var container = document.getElementById(containerId);
+        var MYDPI = _global.MYDPI();
+        this.width = (MYDPI * this.p_width) / 25.4; // pixel for dpi = current device dpi
+        this.height = (MYDPI * this.p_height) / 25.4;
+        container.style.width = this.width + 'px';
+        container.style.height = this.height + 'px';
+        container.style.left = "30px";
+        container.style.top = "10px";
+        this.containerId = containerId;
+        this.id = id;
+        this.name = name;
+        this.order = 0;
+    }
+    Card.prototype.zoomCard = function (zoom) {
+        var _this = this;
+        if (zoom === void 0) { zoom = 1.0; }
+        this.zoom = zoom;
+        var container = document.getElementById(this.containerId);
+        container.style.width = this.width * zoom + 'px';
+        container.style.height = this.height * zoom + 'px';
+        container.style.left = "30px";
+        container.style.top = "10px";
+        this.cardElements.forEach(function (element) {
+            element.display(_this.containerId, zoom);
+        });
+        return zoom;
+    };
+    Card.prototype.getContainerId = function () {
+        return this.containerId;
+    };
+    Card.prototype.getName = function () {
+        return this.name;
+    };
+    Card.prototype.addCardElement = function (cardElement) {
+        this.cardElements.push(cardElement);
+    };
+    Card.prototype.removeCardElement = function (cardElement) {
+        throw new Error("Method not implemented.");
+    };
+    Card.prototype.findCardElement = function (cardElementId) {
+        for (var element_1 in this.cardElements) {
+            if (this.cardElements[element_1].name === cardElementId) {
+                return this.cardElements[element_1];
+            }
+        }
+        return null;
+    };
+    return Card;
+}());
+exports.default = Card;
+
+
+/***/ }),
+
+/***/ "./resources/ts/card/index.ts":
+/*!************************************!*\
+  !*** ./resources/ts/card/index.ts ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var _this = this;
+Object.defineProperty(exports, "__esModule", { value: true });
+var card_image_1 = __webpack_require__(/*! ./card-image */ "./resources/ts/card/card-image.ts");
+var card_canvas_1 = __webpack_require__(/*! ./card-canvas */ "./resources/ts/card/card-canvas.ts");
+var card_1 = __webpack_require__(/*! ./card */ "./resources/ts/card/card.ts");
+var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+var card;
+var containerId;
+var cardCanvas;
+var IMAGE = 1001;
+var TEXT = 1002;
+var PRINTDPI = 350;
+$(document).ready(function () {
+    //         target.style.border = "dashed red";
+    initDashedClick();
+    document.getElementById('previewCanvasButton').addEventListener("click", function () {
+        cardCanvas = new card_canvas_1.default('mycanvas', card);
+        cardCanvas.drawCanvas(true);
+    });
+});
+function initDashedClick() {
+    $(window).on("click.Bst", function (event) {
+        if (!$('.dashed').is(event.target)) {
+            for (var i = 0; i < dashedElements.length; i++) {
+                var dashedElement = dashedElements[i];
+                dashedElement.style.border = "";
+            }
+            ;
+        }
+    });
+    var dashedElements;
+    dashedElements = document.getElementsByClassName("dashed");
+    var _loop_1 = function (i) {
+        var dashedElement = dashedElements[i];
+        dashedElement.addEventListener("click", function () {
+            for (var i_1 = 0; i_1 < dashedElements.length; i_1++) {
+                var dashedElement_1 = dashedElements[i_1];
+                dashedElement_1.style.border = "";
+            }
+            ;
+            dashedElement.style.border = "dashed red";
+        });
+    };
+    for (var i = 0; i < dashedElements.length; i++) {
+        _loop_1(i);
+    }
+    ;
+}
+var getDPI = function getDPI() {
+    return 101.6;
+    var div = document.createElement("div");
+    div.style.height = "1in";
+    div.style.width = "1in";
+    div.style.top = "-100%";
+    div.style.left = "-100%";
+    div.style.position = "absolute";
+    document.body.appendChild(div);
+    var result = div.offsetHeight;
+    document.body.removeChild(div);
+    return result;
+};
+var initCard = function (id, name, container, width, height) {
+    if (card == null) {
+        containerId = container;
+        card = new card_1.default(containerId, id, name, width, height);
+        _this.card = card;
+        return card;
+    }
+    else {
+        alert('card exist');
+    }
+};
+var updateCardElementPosition = function updateCardElementPosition(cardElementId, x, y) {
+    var cardElement = card.findCardElement(cardElementId);
+    if (cardElement != null)
+        cardElement.moveTo(x, y, card.getContainerId());
+};
+var updateCardElementSize = function updateCardElementSize(cardElementId, w, h) {
+    var cardElement = card.findCardElement(cardElementId);
+    if (cardElement != null)
+        cardElement.updateSize(w, h);
+};
+var getContainer = function getContainer() {
+    return document.getElementById(containerId);
+};
+var addCardImage = function addCardImage(id, name, image, width, height, x, y) {
+    var cardImage = new card_image_1.default(id, name, image, width, height, x, y);
+    if (containerId != null) {
+        cardImage.display(containerId);
+    }
+    card.addCardElement(cardImage);
+};
+var addCardText = function addCardText(id, font, size, x, y) {
+    //
+};
+var removeCardElement = function removeCardElement(type) {
+    //
+};
+var _global = (window);
+_global.initCard = initCard;
+_global.addCardImage = addCardImage;
+_global.addCardText = addCardText;
+_global.card = this.card;
+_global.getContainer = getContainer;
+_global.updateCardElementPosition = updateCardElementPosition;
+_global.updateCardElementSize = updateCardElementSize;
+_global.removeCardElement = removeCardElement;
+_global.PRINTDPI = PRINTDPI;
+_global.MYDPI = getDPI;
+
+
+/***/ }),
+
 /***/ "./resources/ts/index.ts":
 /*!*******************************!*\
   !*** ./resources/ts/index.ts ***!
@@ -10677,6 +10943,7 @@ exports.default = CardText;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 __webpack_require__(/*! ./tab/index */ "./resources/ts/tab/index.ts");
+__webpack_require__(/*! ./card/index */ "./resources/ts/card/index.ts");
 var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 $(document).ready(function () {
     //

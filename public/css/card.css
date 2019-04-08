@@ -67,7 +67,6 @@ body .side .tabcontent .content {
   position: relative;
   overflow: hidden;
   display: inline-block;
-  left: 50%;
 }
 body .side .tabcontent .content .btn {
   border: 2px solid #00a0e8;
@@ -99,7 +98,8 @@ body .main {
   height: 800px;
   min-height: 800px;
   position: relative;
-  overflow: scroll;
+  overflow-y: auto;
+  overflow-x: auto;
 }
 body .main .card {
   position: relative;
