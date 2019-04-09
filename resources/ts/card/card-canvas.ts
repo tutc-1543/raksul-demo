@@ -1,6 +1,7 @@
 import Card from './card';
 import CardElement from './card-element';
 const _global = (window) as any;
+var myTimeout;
 
 export default class CardCanvas {
     context: CanvasRenderingContext2D;
@@ -36,28 +37,64 @@ export default class CardCanvas {
     }
 
     drawCanvas(download: boolean = false) {
-        this.card.cardElements.sort((e1: CardElement, e2: CardElement) => {
-            return e1.order < e2.order ? 1 : -1;
-        });
+        // this.card.cardElements.sort((e1: CardElement, e2: CardElement) => {
+        //     return e1.order < e2.order ? 1 : -1;
+        // });
 
-        let canvas = this.canvas, ctx = this.context;
-        let loadCardElements = [];
-        let i = 0;
-        this.card.cardElements.forEach(element => {
-            loadCardElements[i++] = element.drawToCanvasContext(this.context, this.scaleDPI, this.card.zoom);
-        });
-        
-        var dataURL;
-        
-        Promise.all(loadCardElements).then(function(value) {
-            dataURL = canvas.toDataURL("image/png");
-            var download = document.getElementById("downloadCard");
-            var imageData = dataURL;
-            download.setAttribute("href", imageData);
-            download.click();
-        }, function(reason) {
-            console.error(reason);
-        });
+        var context = this.context, scaleDPI = this.scaleDPI, zoom = this.card.zoom, dataURL, canvas = this.canvas;
+        function drawContext(cardElements: CardElement[], position: number = 0) {
+            if (position == cardElements.length) {
+                dataURL = canvas.toDataURL("image/png");
+                var download = document.getElementById("downloadCard");
+                var imageData = dataURL;
+                download.setAttribute("href", imageData);
+                download.click();
+                clearTimeout(myTimeout);
+            }
+
+            var cardElement : any = cardElements[position];
+            var image = new Image();
+            let x = cardElement.x, y = cardElement.y, width = cardElement.width, height = cardElement.height;
+            x = (x/zoom)*scaleDPI;
+            console.log(zoom);
+            y = (y/zoom)*scaleDPI;
+            width = (width/zoom)*scaleDPI;
+            height = (height/zoom)*scaleDPI;
+            image.src = cardElement.src;
+            image.onload = () => {
+                context.drawImage(image, x, y, width, height);
+            };
+
+            myTimeout = setTimeout(() => drawContext(cardElements, position + 1), 200);
+        }
+
+        drawContext(this.card.cardElements);
+        // var dataURL;
+        // let context = this.context, scaleDPI = this.scaleDPI, zoom = this.card.zoom;
+        // const promiseChain = this.card.cardElements.reduce((chain, d) => chain.then(() => {
+        //         d.drawToCanvasContext(context, scaleDPI, zoom);
+        //     }), Promise.resolve());
+
+        // promiseChain.then(() => {
+        //     dataURL = canvas.toDataURL("image/png");
+        //     console.log(dataURL);
+        //     var download = document.getElementById("downloadCard");
+        //     var imageData = dataURL;
+        //     download.setAttribute("href", imageData);
+        //     download.click();
+        // }, function(reason) {
+        //     console.error(reason);
+        // });
+
+        // Promise.all(loadCardElements).then(function(value) {
+        //     dataURL = canvas.toDataURL("image/png");
+        //     var download = document.getElementById("downloadCard");
+        //     var imageData = dataURL;
+        //     download.setAttribute("href", imageData);
+        //     download.click();
+        // }, function(reason) {
+        //     console.error(reason);
+        // });
             
     }
 

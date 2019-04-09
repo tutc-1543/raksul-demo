@@ -10,8 +10,8 @@ export default class Card {
     height: number;
     p_width: number;
     p_height: number;
-    order: number;
-    zoom: number;
+    order: number = 0;
+    zoom: number = 1;
 
     cardElements: CardElement[] = [];
     constructor(containerId: string, id: number, name: string, width: number, height: number) {

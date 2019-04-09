@@ -40,18 +40,14 @@ export default class CardImage implements CardElement {
     
     drawToCanvasContext(context: CanvasRenderingContext2D, scaleDPI: number = 1, zoom: number = 1) {
         let src = this.src, x = (this.x/zoom)*scaleDPI, y = (this.y/zoom)*scaleDPI, width = (this.width/zoom)*scaleDPI, height = (this.height/zoom)*scaleDPI;
-        return new Promise(function(resolve, reject) {
-            var image = new Image();
-            image.src = src;
-            image.onload = function() {
-                context.drawImage(image, x, y, width, height);
-                resolve(image);
-            };
-            image.onerror = reject;
-            if (image.complete) {
-                image.onload;
-            }
-        });
+        var image = new Image();
+        image.src = src;
+        image.onload = () => {
+            context.drawImage(image, x, y, width, height);
+        };
+        if (image.complete) {
+            image.onload;
+        }
     }
 
     display(containerId: string, zoom: number = 1) {
