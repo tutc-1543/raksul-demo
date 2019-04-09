@@ -84,7 +84,8 @@ export default class CardImage implements CardElement {
         canvas.style.left = this.x.toString() + 'px';
         canvas.style.top = this.y.toString() + 'px';
         canvas.style.position = "absolute";
-
+        canvas.setAttribute('data-top', this.y);
+        canvas.setAttribute('data-left', this.x);
         var image = new Image();
         image.src = this.src;
         image.onload = () => {
