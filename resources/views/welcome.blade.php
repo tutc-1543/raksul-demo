@@ -16,17 +16,17 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="side" style="width: 20%; height: 640px">
-                    <div class="tab">
+                    <!-- <div class="tab">
                         <button class="col-sm-4 tablinks" value="tabCard">Card</button>
                         <button class="col-sm-4 tablinks" value="tabImage">Image</button>
                         <button class="col-sm-4 tablinks" value="tabText">Text</button>
                         @include('cards.tab')
-                    </div>
+                    </div> 
                     <div class="">
                         <button id="saveCard" class="btn btn-primary btn-block">Save Card</button>
-                        <a id="downloadCard" download="Pretty Card"></a>
-                    </div>
-                    <div class="">
+                        
+                    </div> -->
+                    <div class="row" style="margin: 10px;">
                         <div class="btn-group">
                             <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Zoom
@@ -40,11 +40,13 @@
                                 <button class="dropdown-item zoom" value="3.0">300%</button>
                             </div>
                         </div>
+                        <button id="previewCanvasButton" class="btn btn-primary" style="margin-left: 10px">Preview</button>
+                        <a id="downloadCard" download="Pretty Card"></a>
                     </div>
-                    <button id="previewCanvasButton" class="btn btn-primary">Preview Canvas</button>
+                    
                 </div>
                 <div class="main" style="width: 80%; height: 80%">
-                    <div id="myCard" class="card">
+                    <div id="myCard" class="card" title="my Card">
                     </div>
                 </div>
             </div>
