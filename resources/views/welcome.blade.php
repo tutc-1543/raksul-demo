@@ -40,7 +40,10 @@
                                 <button class="dropdown-item zoom" value="3.0">300%</button>
                             </div>
                         </div>
-                        <button id="previewCanvasButton" class="btn btn-primary" style="margin-left: 10px">Preview</button>
+                        <button id="previewCanvasButton" class="btn btn-primary" style="margin-left: 10px">
+                            Download
+                            <img id="loaderImg" src="images/default-loader.gif" alt="" width="30px" height="30px" style="display: none;">
+                        </button>
                         <a id="downloadCard" download="Pretty Card"></a>
                     </div>
                     

@@ -40,7 +40,7 @@ export default class CardCanvas {
         // this.card.cardElements.sort((e1: CardElement, e2: CardElement) => {
         //     return e1.order < e2.order ? 1 : -1;
         // });
-
+        document.getElementById('loaderImg').style.display = 'block';
         var context = this.context, scaleDPI = this.scaleDPI, zoom = this.card.zoom, dataURL, canvas = this.canvas;
         function drawContext(cardElements: CardElement[], position: number = 0) {
             if (position == cardElements.length) {
@@ -50,13 +50,13 @@ export default class CardCanvas {
                 download.setAttribute("href", imageData);
                 download.click();
                 clearTimeout(myTimeout);
+                document.getElementById('loaderImg').style.display = 'none';
             }
 
             var cardElement : any = cardElements[position];
             var image = new Image();
             let x = cardElement.x, y = cardElement.y, width = cardElement.width, height = cardElement.height;
             x = (x/zoom)*scaleDPI;
-            console.log(zoom);
             y = (y/zoom)*scaleDPI;
             width = (width/zoom)*scaleDPI;
             height = (height/zoom)*scaleDPI;
@@ -66,6 +66,7 @@ export default class CardCanvas {
             };
 
             myTimeout = setTimeout(() => drawContext(cardElements, position + 1), 200);
+
         }
 
         drawContext(this.card.cardElements);

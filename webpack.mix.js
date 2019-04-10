@@ -17,3 +17,5 @@ mix.js('resources/js/app.js', 'public/js')
    .ts('resources/ts/card/index.ts', 'public/js/card.js')
    .ts('resources/ts/card-interact.ts', 'public/js/card-interact.js')
    .less('resources/less/app.less', 'public/css/card.css');
+
+mix.browserSync('localhost:8000');

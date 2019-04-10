@@ -17,8 +17,10 @@ $(document).ready( () => {
     //         target.style.border = "dashed red";
     initDashedClick();
     document.getElementById('previewCanvasButton').addEventListener("click", () => {
+
         cardCanvas = new CardCanvas('mycanvas', card);
         cardCanvas.drawCanvas(true);
+        
     });
 });
 function initDashedClick() {
